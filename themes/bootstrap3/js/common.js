@@ -88,11 +88,9 @@ function phoneNumberFormHandler(numID, regionCode) {
     }
     $(phoneInput).siblings('.help-block.with-errors').html(valid);
     $(phoneInput).closest('.form-group').addClass('sms-error');
-    return false;
   } else {
     $(phoneInput).closest('.form-group').removeClass('sms-error');
     $(phoneInput).siblings('.help-block.with-errors').html('');
-    return true;
   }
 }
 
@@ -310,28 +308,22 @@ function setupAutocomplete() {
       loadingString: VuFind.translate('loading')+'...',
       handler: function(query, cb) {
         var searcher = extractClassParams(op);
-        var hiddenFilters = [];
-        $(op).closest('.searchForm').find('input[name="hiddenFilters[]"]').each(function() {
-          hiddenFilters.push($(this).val());
-        });
         $.fn.autocomplete.ajax({
           url: VuFind.getPath() + '/AJAX/JSON',
           data: {
             q:query,
             method:'getACSuggestions',
             searcher:searcher['searcher'],
-            type:searcher['type'] ? searcher['type'] : $(op).closest('.searchForm').find('.searchForm_type').val(),
-            hiddenFilters:hiddenFilters
+            type:searcher['type'] ? searcher['type'] : $(op).closest('.searchForm').find('.searchForm_type').val()
           },
           dataType:'json',
           success: function(json) {
-        	  if (json.status == 'OK' && json.data.length > 0) {
-                var datums = [];
-                for (var i=0;i<json.data.length;i++) {
-                  datums.push(json.data[i]);
-                }
-        		cb(datums);
-        		
+            if (json.status == 'OK' && json.data.length > 0) {
+              var datums = [];
+              for (var i=0;i<json.data.length;i++) {
+                datums.push(json.data[i]);
+              }
+              cb(datums);
             } else {
               cb([]);
             }
@@ -405,7 +397,23 @@ $(document).ready(function() {
 
   // Checkbox select all
   $('.checkbox-select-all').change(function() {
-    $(this).closest('form').find('.checkbox-select-item').prop('checked', this.checked);
+    elm = $(this).closest('form').find('.checkbox-select-item');
+    newVal = $(this).prop('checked');
+    console.log("newVal: " + newVal);
+    $(elm).each(function() {
+      oldVal = $(this).prop('checked');
+      if (newVal != oldVal) {
+        $(this).prop('checked', newVal);
+        $(this).change();
+      }
+    });
+  });
+  
+  //disable AJAX on click on cart
+  $(document).ready(function() {
+      $(window).load(function() {
+      	$('#cartItems').off("click");
+      });
   });
   $('.checkbox-select-item').change(function() {
     $(this).closest('form').find('.checkbox-select-all').prop('checked', false);
@@ -458,3 +466,24 @@ $(document).ready(function() {
     $(this).attr("clicked", "true");
   });
 });
+
+function updateCart(item) {
+  value = $(item).attr('value');
+  values = value.split('|');
+  source = values[0];
+  id = values[1];
+  if ($(item).prop("checked")) {
+    addItemToCart(id, source);
+  } else {
+    removeItemFromCart(id, source);
+  }
+}
+
+function refreshCartItems() {
+  items = getFullCartItems();
+  $('.checkbox-select-all').closest('form').find('.checkbox-select-item').each(function (index) {
+    if (items.indexOf($(this).attr('value')) >= 0) {
+      $(this).attr('checked', true);
+    }
+  });
+}

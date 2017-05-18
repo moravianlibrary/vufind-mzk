@@ -1,74 +1,82 @@
 <? $account = $this->auth()->getManager(); ?>
-<div class="navbar-header">
-  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#header-collapse">
-    <span class="sr-only">Toggle navigation</span>
-    <i class="fa fa-bars"></i>
-  </button>
-  <a class="navbar-brand lang-<?=$this->layout()->userLang ?>" href="<?=$this->url('home')?>">VuFind</a>
-</div>
-<? if ($this->layout()->searchbox !== false): ?>
-  <section class="visible-lg">
-    <?=$this->layout()->searchbox ?>
-  </section>
-<? endif; ?>
-<? if (!isset($this->layout()->renderingError)): ?>
-  <div class="collapse navbar-collapse" id="header-collapse">
-    <nav>
-      <ul class="nav navbar-nav navbar-right flip">
-        <? if ($this->feedback()->tabEnabled()): ?>
-          <li>
-            <a id="feedbackLink" class="modal-link" href="<?=$this->url('feedback-home') ?>"><i class="fa fa-envelope"></i> <?=$this->transEsc("Feedback")?></a>
-          </li>
-        <? endif; ?>
-        <? $cart = $this->cart(); if ($cart->isActive()): ?>
-          <li id="cartSummary">
-            <a id="cartItems" class="modal-link" title="<?=$this->transEsc('View Book Bag')?>" href="<?=$this->url('cart-home')?>"><i class="fa fa-suitcase"></i> <strong><?=count($cart->getItems())?></strong> <?=$this->transEsc('items')?><?=$cart->isFull() ? ' (' .  $this->transEsc('bookbag_full') . ')' : ''?></a>
-          </li>
-        <? endif; ?>
-        <? if (is_object($account) && $account->loginEnabled()): // hide login/logout if unavailable ?>
-          <li class="logoutOptions<? if(!$account->isLoggedIn()): ?> hidden<? endif ?>">
-            <a href="<?=$this->url('myresearch-home', array(), array('query' => array('redirect' => 0)))?>" class="modal-link" title="<?=$this->transEsc("Your Account")?>"><i class="fa fa-home"></i> <?=$this->transEsc("Your Account")?></a>
-          </li>
-          <li class="logoutOptions<? if(!$account->isLoggedIn()): ?> hidden<? endif ?>">
-            <a href="<?=$this->url('myresearch-logout')?>" class="modal-link" title="<?=$this->transEsc("Log Out")?>"><i class="fa fa-sign-out"></i> <?=$this->transEsc("Log Out")?></a>
-          </li>
-          <li id="loginOptions"<? if($account->isLoggedIn()): ?> class="hidden"<? endif ?>>
-            <? if ($account->getSessionInitiator($this->serverUrl($this->url('myresearch-home')))): ?>
-              <a href="<?=$this->url('myresearch-userlogin')?>"><i class="fa fa-sign-in"></i> <?=$this->transEsc("Institutional Login")?></a>
-            <? else: ?>
-              <a href="<?=$this->url('myresearch-userlogin')?>" class="modal-link" title="<?=$this->transEsc("Login")?>"><i class="fa fa-sign-in"></i> <?=$this->transEsc("Login")?></a>
-            <? endif; ?>
-          </li>
-        <? endif; ?>
+<div class="navbar header">
 
-        <? if (isset($this->layout()->themeOptions) && count($this->layout()->themeOptions) > 1): ?>
-          <li class="dropdown">
-            <form method="post" name="themeForm" id="themeForm">
-              <input type="hidden" name="ui"/>
-            </form>
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?=$this->transEsc("Theme")?> <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <? foreach ($this->layout()->themeOptions as $current): ?>
-                <li<?=$current['selected'] ? ' class="active"' : ''?>><a href="#" onClick="document.themeForm.ui.value='<?=$this->escapeHtmlAttr($current['name'])?>';document.themeForm.submit()"><?=$this->transEsc($current['desc'])?></a></li>
-              <? endforeach; ?>
-            </ul>
-          </li>
-        <? endif; ?>
-
-        <? if (isset($this->layout()->allLangs) && count($this->layout()->allLangs) > 1): ?>
-          <li class="dropdown">
-            <form method="post" name="langForm" id="langForm">
-              <input type="hidden" name="mylang"/>
-            </form>
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?=$this->transEsc("Language")?> <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <? foreach ($this->layout()->allLangs as $langCode => $langName): ?>
-                <li<?=$this->layout()->userLang == $langCode ? ' class="active"' : ''?>><a href="#" onClick="document.langForm.mylang.value='<?=$langCode?>';document.langForm.submit()"><?=$this->displayLanguageOption($langName)?></a></li>
-              <? endforeach; ?>
-            </ul>
-          </li>
-        <? endif; ?>
-      </ul>
-    </nav>
+  <div>
+  <? if (isset($this->layout()->allLangs) && count($this->layout()->allLangs) > 1): ?>
+    <ul class="nav navbar-nav pull-right">
+      <?
+        $baseUrl = strtok($_SERVER["REQUEST_URI"], '?');
+        $params = array();
+        parse_str($_SERVER['QUERY_STRING'], $params);
+      ?>
+      <? foreach ($this->layout()->allLangs as $langCode => $langName): ?>
+        <?
+          $langImg = 'lang/' . $langCode . '.png';
+          $params['lng'] = $langCode;
+          $query = http_build_query($params);
+          $langUrl = $baseUrl . "?" . $query;
+        ?>
+        <li>
+          <a class="language" href="<?=$langUrl?>">
+            <img class="langFlag" src="<?=$this->imageLink($langImg)?>" alt="<?=$langName?>" />
+            <?=$this->displayLanguageOption($langName)?>
+          </a>
+        </li>
+      <? endforeach; ?>
+    </ul>
+  <? endif; ?>
   </div>
-<? endif; ?>
+</div>
+
+  <div class="navbar header">
+
+    <? if ($this->layout()->frontpage == false): ?>
+      <ul class="nav navbar-nav pull-left">
+        <li class="header-logo">
+          <a href="http://www.mzk.cz/"><img src="<?=$this->imageLink('logo-mzk.png') ?>"></img></a>
+        </li>
+        <li>
+          <? if ($this->layout()->searchbox !== false): ?>
+            <?=$this->layout()->searchbox?>
+          <? endif;?>
+        </li>
+      </ul>
+    <? endif; ?>
+    <nav>
+    <ul class="nav navbar-nav navbar-right flip">
+
+
+      <? if (is_object($account) && $account->loginEnabled()): // hide login/logout if unavailable ?>
+        <li>
+          <div class="loginbox">
+            <? if($account->isLoggedIn()): ?>
+              <a href="<?=$this->url('myresearch-home')?>" class="myresearch" title="<?=$this->transEsc("MyResearch")?>"><?=$this->transEsc("MyResearch")?></a>
+              <a href="<?=$this->url('myresearch-logout')?>" class="logout" title="<?=$this->transEsc("Log Out")?>"><?=$this->transEsc("Log Out")?></a>
+            <? else:?>
+              <a href="https://www.mzk.cz/registration_mzk" title="<?=$this->transEsc("Register")?>" class="register"><?=$this->transEsc("Register")?></a>
+              <? if ($sessionInitiator = $account->getSessionInitiator($this->serverUrl($this->url('myresearch-home')))): ?>
+                <a href="<?=$this->escapeHtml($sessionInitiator)?>" class="login"><?=$this->transEsc("Login")?></a>
+              <? else: ?>
+                <a href="<?=$this->url('myresearch-home')?>" class="login" title="<?=$this->transEsc("Login")?>"><?=$this->transEsc("Login")?></a>
+              <? endif; ?>
+            <? endif; ?>
+          </div>
+          <? if ($this->layout()->frontpage == false): ?>
+            <? $cart = $this->cart(); if ($cart->isActive()): ?>
+              <span id="cartSummary">
+                <a id="cartItems" class="modal-link" title="<?=$this->transEsc('View Book Bag')?>" href="<?=$this->url('cart-home')?>"><i class="fa fa-suitcase"></i> <strong><?=count($cart->getItems())?></strong> <?=$this->transEsc('items')?><?=$cart->isFull() ? ' (' .  $this->transEsc('bookbag_full') . ')' : ''?></a>
+              </span>
+            <? endif; ?>
+          <? endif; ?>
+        </li>
+      <? endif; ?>
+
+    </ul>
+    </nav>
+
+    <div class="header-finisher"></div>
+
+  </div>
+<!--
+</nav>
+ -->

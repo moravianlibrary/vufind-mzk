@@ -22,6 +22,7 @@ return array(
         'vendor/rc4.js',
         'common.js',
         'lightbox.js',
+        'obalkyknih.js'
     ),
     'less' => array(
         'active' => false,
@@ -31,7 +32,14 @@ return array(
     'helpers' => array(
         'factories' => array(
             'flashmessages' => 'VuFind\View\Helper\Bootstrap3\Factory::getFlashmessages',
-            'layoutclass' => 'VuFind\View\Helper\Bootstrap3\Factory::getLayoutClass',
+            'record' => function ($sm) {
+                return new \MZKCommon\View\Helper\MZKCommon\Record(
+                    $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+                );
+            },
+            'layoutclass' => 'MZKCatalog\View\Helper\MzkTheme\Factory::getLayoutClass',
+            'mzkhelper'   => 'MZKCatalog\View\Helper\MzkTheme\Factory::getMzkHelper',
+            'obalkyknih' => 'ObalkyKnihV3\View\Helper\ObalkyKnih\Factory::getObalkyKnih',
         ),
         'invokables' => array(
             'highlight' => 'VuFind\View\Helper\Bootstrap3\Highlight',

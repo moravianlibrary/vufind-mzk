@@ -1,72 +1,35 @@
-<?
-  if($loggedin = $this->auth()->isLoggedIn()) {
-    $user_id = $loggedin->id;
-    $loggedin = true;
-  } else {
-    $user_id = false;
-  }
+<?php
+  $backLink = $this->serverUrl($this->recordLink()->getUrl($this->driver));
+  $formats = $this->driver->getFormats();
 ?>
-<div class="row" vocab="http://schema.org/" resource="#record" typeof="<?=$this->driver->getSchemaOrgFormats()?> Product">
-  <? $QRCode = $this->record($this->driver)->getQRCode("core");
+<? if ($bibinfo = $this->record($this->driver)->getObalkyKnihJSONV3()): ?>
+    <script type="text/javascript">
+      obalky.display_cover("#cover", <?=$bibinfo?>, <?=json_encode($this->record($this->driver)->getObalkyKnihAdvert("record"))?>);
+    </script>
+<? endif; ?>
+<div class="row">
+  <? $QRCode = $this->record($this->driver)->getQRCode("core"); 
      $cover = $this->record($this->driver)->getCover('core', 'medium', $this->record($this->driver)->getThumbnail('large'));
      $preview = $this->record($this->driver)->getPreviews(); ?>
-  <? if ($QRCode || $cover || $preview): ?>
-  <div class="col-sm-3">
-    <div class="text-center">
-      <? /* Display thumbnail if appropriate: */ ?>
-      <? if($cover): ?>
-        <?=$cover?>
-      <? endif; ?>
 
-      <? /* Display qrcode if appropriate: */ ?>
-      <? if($QRCode): ?>
-        <span class="hidden-xs">
-          <br/><img alt="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtmlAttr($QRCode);?>"/>
-        </span>
-      <? endif; ?>
-    </div>
+  <div class="col-md-9">
+    <h3><?=$this->escapeHtml($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection())?></h3>
 
-    <? // if you have a preview tab but want to move or remove the preview link
-       // from this area of the record view, this can be split into
-       // getPreviewData() (should stay here) and
-       // getPreviewLink() (can go in your desired tab) ?>
-    <? if ($preview): ?><?=$preview?><? endif; ?>
-  </div>
-
-  <div class="col-sm-9">
-  <? else: ?>
-  <div class="col-sm-12">
-  <? endif; ?>
-
-    <h3 property="name"><?=$this->escapeHtml($this->driver->getShortTitle() . ' ' . $this->driver->getSubtitle() . ' ' . $this->driver->getTitleSection())?></h3>
-
-    <? $summary = $this->driver->getSummary(); $summary = isset($summary[0]) ? $this->escapeHtml($summary[0]) : false; ?>
+    <? $summary = $this->driver->getSummary(); $summary = isset($summary[0]) ? $summary[0] : false; ?>
     <? if ($summary): ?>
       <p><?=$this->truncate($summary, 300)?></p>
-
       <? if(strlen($summary) > 300): ?>
         <p><a href='<?=$this->recordLink()->getTabUrl($this->driver, 'Description')?>#tabnav'><?=$this->transEsc('Full description')?></a></p>
       <? endif; ?>
-    <? endif; ?>
-
-    <? if ($this->userlist()->getMode() !== 'disabled'): ?>
-      <? /* Display the lists that this record is saved to */ ?>
-      <div class="savedLists hidden alert alert-info">
-        <strong><?=$this->transEsc("Saved in")?>:</strong>
-      </div>
     <? endif; ?>
 
     <?/* Display Main Details */?>
     <table class="table table-striped" summary="<?=$this->transEsc('Bibliographic Details')?>">
       <? $journalTitle = $this->driver->getContainerTitle(); if (!empty($journalTitle)): ?>
       <tr>
-        <th><?=$this->transEsc('Published in')?>:</th>
+        <th><?=$this->transEsc('Journal Title')?>:</th>
         <td>
-          <?
-            $containerSource = $this->driver->getSourceIdentifier();
-            $containerID = $this->driver->getContainerRecordID();
-          ?>
-          <a href="<?=($containerID ? $this->recordLink()->getUrl("$containerSource|$containerID") : $this->record($this->driver)->getLink('journaltitle', $journalTitle))?>"><?=$this->escapeHtml($journalTitle)?></a>
+          <a href="<?=$this->record($this->driver)->getLink('journaltitle', $journalTitle)?>"><?=$this->escapeHtml($journalTitle)?></a>
           <? $ref = $this->driver->getContainerReference(); if (!empty($ref)) { echo $this->escapeHtml($ref); } ?>
         </td>
       </tr>
@@ -99,14 +62,14 @@
       <? if (isset($authors['main']) && !empty($authors['main'])): ?>
       <tr>
         <th><?=$this->transEsc('Main Author')?>: </th>
-        <td property="author"><a href="<?=$this->record($this->driver)->getLink('author', $authors['main'])?>"><?=$this->escapeHtml($authors['main'])?></a></td>
+        <td><a href="<?=$this->record($this->driver)->getLink('author', $authors['main'])?>"><?=$this->escapeHtml($authors['main'])?></a></td>
       </tr>
       <? endif; ?>
 
       <? if (isset($authors['corporate']) && !empty($authors['corporate'])): ?>
       <tr>
         <th><?=$this->transEsc('Corporate Author')?>: </th>
-        <td property="creator"><a href="<?=$this->record($this->driver)->getLink('author', $authors['corporate'])?>"><?=$this->escapeHtml($authors['corporate'])?></a></td>
+        <td><a href="<?=$this->record($this->driver)->getLink('author', $authors['corporate'])?>"><?=$this->escapeHtml($authors['corporate'])?></a></td>
       </tr>
       <? endif; ?>
 
@@ -114,22 +77,15 @@
       <tr>
         <th><?=$this->transEsc('Other Authors')?>: </th>
         <td>
-          <? $i = 0; foreach ($authors['secondary'] as $field): ?><?=($i++ == 0)?'':', '?><span property="contributor"><a href="<?=$this->record($this->driver)->getLink('author', $field)?>"><?=$this->escapeHtml($field)?></a></span><? endforeach; ?>
+          <? $i = 0; foreach ($authors['secondary'] as $field): ?><?=($i++ == 0)?'':', '?><a href="<?=$this->record($this->driver)->getLink('author', $field)?>"><?=$this->escapeHtml($field)?></a><? endforeach; ?>
         </td>
       </tr>
-      <? endif; ?>
-
-      <? $formats = $this->driver->getFormats(); if (!empty($formats)): ?>
-        <tr>
-          <th><?=$this->transEsc('Format')?>: </th>
-          <td><?=$this->record($this->driver)->getFormatList()?></td>
-        </tr>
       <? endif; ?>
 
       <? $langs = $this->driver->getLanguages(); if (!empty($langs)): ?>
         <tr>
           <th><?=$this->transEsc('Language')?>: </th>
-          <td><? foreach ($langs as $lang): ?><?= $this->escapeHtml($lang)?><br/><? endforeach; ?></td>
+          <td><? foreach ($langs as $lang): ?><?= $this->transEsc($lang)?><br/><? endforeach; ?></td>
         </tr>
       <? endif; ?>
 
@@ -138,18 +94,7 @@
         <th><?=$this->transEsc('Published')?>: </th>
         <td>
           <? foreach ($publications as $field): ?>
-            <span property="publisher" typeof="Organization">
-            <? $pubPlace = $field->getPlace(); if (!empty($pubPlace)): ?>
-              <span property="location"><?=$this->escapeHtml($pubPlace)?></span>
-            <? endif; ?>
-            <? $pubName = $field->getName(); if (!empty($pubName)): ?>
-              <span property="name"><?=$this->escapeHtml($pubName)?></span>
-            <? endif; ?>
-            </span>
-            <? $pubDate = $field->getDate(); if (!empty($pubDate)): ?>
-              <span property="publicationDate"><?=$this->escapeHtml($pubDate)?></span>
-            <? endif; ?>
-            <br/>
+            <?=$this->escapeHtml($field)?><br/>
           <? endforeach; ?>
         </td>
       </tr>
@@ -158,7 +103,7 @@
       <? $edition = $this->driver->getEdition(); if (!empty($edition)): ?>
       <tr>
         <th><?=$this->transEsc('Edition')?>: </th>
-        <td property="bookEdition"><?=$this->escapeHtml($edition)?></td>
+        <td><?=$this->escapeHtml($edition)?></td>
       </tr>
       <? endif; ?>
 
@@ -191,26 +136,11 @@
       <tr>
         <th><?=$this->transEsc('Subjects')?>: </th>
         <td>
-          <? foreach ($subjects as $field): ?>
-          <div class="subjectLine" property="keywords">
-            <? $subject = ''; ?>
-            <? if(count($field) == 1) $field = explode('--', $field[0]); ?>
-            <? $i = 0; foreach ($field as $subfield): ?>
-              <?=($i++ == 0) ? '' : ' &gt; '?>
-              <? $subject = trim($subject . ' ' . $subfield); ?>
-              <a class="backlink" title="<?=$this->escapeHtmlAttr($subject)?>" href="<?=$this->record($this->driver)->getLink('subject', $subject)?>" rel="nofollow"><?=trim($this->escapeHtml($subfield))?></a>
-            <? endforeach; ?>
+          <? foreach ($subjects as $subject): ?>
+          <div class="subjectLine">
+            <a class="backlink" title="<?=$this->escapeHtml($subject)?>" href="<?=$this->record($this->driver)->getLink('subject', $subject)?>" class="subjectHeading"><?=trim($this->escapeHtml($subject))?></a>
           </div>
           <? endforeach; ?>
-        </td>
-      </tr>
-      <? endif; ?>
-
-      <? $childRecordCount = $this->driver->tryMethod('getChildRecordCount'); if ($childRecordCount): ?>
-      <tr>
-        <th><?=$this->transEsc('child_records')?>: </th>
-        <td>
-          <a href="<?=$this->recordLink()->getChildRecordSearchUrl($this->driver)?>"><?=$this->transEsc('child_record_count', array('%%count%%' => $childRecordCount))?></a>
         </td>
       </tr>
       <? endif; ?>
@@ -238,36 +168,104 @@
       <? $recordLinks = $this->driver->getAllRecordLinks(); ?>
       <? if(!empty($recordLinks)): ?>
         <tr>
-          <th><?=$this->transEsc('Related Items')?>:</th>
+          <th><?=$this->transEsc('Related Items')?></th>
           <td>
             <? foreach ($recordLinks as $recordLink): ?>
               <?=$this->transEsc($recordLink['title'])?>:
               <a href="<?=$this->recordLink()->related($recordLink['link'])?>"><?=$this->escapeHtml($recordLink['value'])?></a><br />
             <? endforeach; ?>
-            <? /* if we have record links, display relevant explanatory notes */
-              $related = $this->driver->getRelationshipNotes();
-              if (!empty($related)): ?>
-                <? foreach ($related as $field): ?>
-                  <?=$this->escapeHtml($field)?><br/>
-                <? endforeach; ?>
-            <? endif; ?>
           </td>
+        </tr>
+      <? endif; ?>
+      
+      <? $physical = $this->driver->getPhysicalDescriptions(); ?>
+      <? if (!empty($physical)): ?>
+        <tr valign="top">
+          <th><?=$this->transEsc('Physical Description')?>: </th>
+            <td>
+              <? foreach ($physical as $field): ?>
+                <?=$this->escapeHtml($field)?><br/>
+              <? endforeach; ?>
+            </td>
+        </tr>
+      <? endif; ?>
+      
+      <? $subscribedYears = $this->driver->getSubscribedYears(); ?>
+      <? if ($subscribedYears): ?>
+        <tr valign="top">
+          <th><?=$this->transEsc('Subscribed years')?>: </th>
+            <td>
+              <?=$this->escapeHtml($subscribedYears)?><br/>
+            </td>
         </tr>
       <? endif; ?>
 
-      <? if ($this->usertags()->getMode() !== 'disabled'): ?>
-        <? $tagList = $this->driver->getTags(null, null, 'count', $user_id); ?>
-        <tr>
-          <th><?=$this->transEsc('Tags')?>: </th>
-          <td>
-            <a class="tag-record btn btn-link pull-right flip" href="<?=$this->recordLink()->getActionUrl($this->driver, 'AddTag')?>" title="<?=$this->transEsc('Add Tag')?>">
-              <i class="fa fa-plus"></i> <?=$this->transEsc('Add Tag')?>
-            </a>
-            <?=$this->context($this)->renderInContext('record/taglist', array('tagList'=>$tagList, 'loggedin'=>$loggedin)) ?>
-          </td>
+      <? $subscribedVolumes = $this->driver->getSubscribedVolumes(); ?>
+      <? if ($subscribedVolumes): ?>
+        <tr valign="top">
+          <th><?=$this->transEsc('Subscribed volumes')?>: </th>
+            <td>
+              <?=$this->escapeHtml($subscribedVolumes)?><br/>
+            </td>
         </tr>
       <? endif; ?>
+
     </table>
+    
+    <? $eodLink = $this->driver->getEODLink();?>
+    <? if ($eodLink != null): ?>
+      <table class="eod_link">
+        <tr>
+          <td>
+            <a href="<?=$eodLink?>">
+              <img src="<?=$this->imageLink('eod/eod_button_cz.png')?>"
+                alt="<?=$this->transEsc('EOD text');?>"/>
+            </a>
+          </td>
+        </tr>
+      </table>
+    <? endif; ?>
+    
+    <? $digRequest = $this->driver->isAvailableForDigitalization(); ?>
+    <? if ($digRequest): ?>
+      <table class="digi_req_link">
+        <tr>
+          <td>
+            <a href="<?=$backLink?>/DigiRequest">
+              <img src="<?=$this->imageLink('digitalization_request_button_cz.png')?>"
+                alt="<?=$this->transEsc('request_for_digitalization_button_text');?>" />
+            </a>
+          </td>
+        </tr>
+      </table>
+    <? endif; ?>
+    
     <?/* End Main Details */?>
   </div>
+  
+  <div class="col-md-3 cover">
+    <div class="text-center">
+      <div id="cover">
+        <img src="<?=$this->imageLink('format/' . $formats[0] . '.png')?>" />
+      </div>
+      <?if (!empty($formats)): ?>
+        <div class="format">
+          <?=$this->record($this->driver)->getFormatList()?>
+        </div>
+      <? endif; ?>
+    
+      <? /* Display qrcode if appropriate: */ ?>
+      <? if($QRCode): ?>
+        <img alt="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtml($QRCode);?>"/>
+      <? endif; ?>
+    </div>
+
+    <? /* Display the lists that this record is saved to */ ?>
+    <div class="savedLists hide alert alert-info" id="savedLists">
+      <strong><?=$this->transEsc("Saved in")?>:</strong>
+    </div>
+
+    <? if ($preview): ?><?=$preview?><? endif; ?>
+  </div>
+  
 </div>

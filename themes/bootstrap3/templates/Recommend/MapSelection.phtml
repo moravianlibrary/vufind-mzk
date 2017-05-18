@@ -3,6 +3,7 @@
   $this->headScript()->appendFile('map_selection.js');
   $geoField = $this->recommend->getGeoField();
   $coordinates = $this->recommend->getSelectedCoordinates();
+  $useWKT = $this->recommend->isUseWKT();
   $showSelection = true;
   if ($coordinates == null) {
     $coordinates = $this->recommend->getDefaultCoordinates();
@@ -12,11 +13,16 @@
   $searchParams = $this->recommend->getSearchParams();
   $jsParams = json_encode([
     'geoField'      => $geoField,
-    'boundingBox'   => $coordinates,
+    'boundingBox'   => array_map('doubleval', $coordinates),
     'searchParams'  => $searchParams,
-    'showSelection' => $showSelection
+    'showSelection' => $showSelection,
+    'useWKT'        => $useWKT,
   ]);
   $jsLoad = "loadMapSelection(" . $jsParams . ");";
+  $addSearchOption = <<<EOF
+    $('.search-query-options>.advanced').after('&nbsp;&nbsp;<a href="#" class="advanced" onclick=\\'{$jsLoad} $(this).remove(); return false;\\'>{$this->translate('Geographical search')}</a>');
+EOF;
+
 ?>
 <div class="authorbox">
   <div id="geo_search" style="display: none;">
@@ -31,6 +37,6 @@
   <? if ($showSelection) :?>
     <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $jsLoad, 'SET');?>
   <? else: ?>
-    <a href="#" onclick='<?=$jsLoad?> $(this).remove(); return false;'><?=$this->translate('Geographical search') ?></a>
+    <?=$this->inlineScript(\Zend\View\Helper\HeadScript::SCRIPT, $addSearchOption, 'SET');?>
   <? endif; ?>
 </div>
