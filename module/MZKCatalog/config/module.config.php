@@ -4,20 +4,37 @@ namespace MZKCatalog\Module\Configuration;
 $config = array(
     'vufind' => array(
         'plugin_managers' => array (
+            'ils_driver' => array(
+                'factories' => array(
+                    'aleph' => 'MZKCatalog\ILS\Driver\Factory::getAleph',
+                ), /* factories */
+            ), /* ils_drivers */
+            'recommend' => array(
+                'factories' => array(
+                    'specifiablefacets' => 'MZKCatalog\Recommend\Factory::getSpecifiableFacets',
+                ), /* factories */
+            ), /* recommend */
             'recorddriver' => array (
                 'factories' => array(
                     'solrmzk'   => 'MZKCatalog\RecordDriver\Factory::getSolrMarc',
                     'solrmzk04' => 'MZKCatalog\RecordDriver\Factory::getSolrMarc',
                     'solrebsco' => 'MZKCatalog\RecordDriver\Factory::getEbscoSolrMarc',
+                    'solrdefault' => 'MZKCatalog\RecordDriver\Factory::getSolrMarc',
                 ) /* factories */
             ), /* recorddriver */
             'recordtab' => array(
                 'abstract_factories' => array('VuFind\RecordTab\PluginFactory'),
                 'invokables' => array(
-                    'holdingsils' => 'MZKCommon\RecordTab\HoldingsILS',
+                    'holdingsils' => 'MZKCatalog\RecordTab\HoldingsILS',
                     'citation' => 'MZKCatalog\RecordTab\Citation',
+                    'tagsandcomments' => 'MZKCatalog\RecordTab\TagsAndComments',
                 ), /* invokables */
             ), /* recordtab */
+            'db_table' => array(
+                'invokables' => array(
+                    'recordstatus' => 'MZKCatalog\Db\Table\RecordStatus',
+                ),
+            ),
         ), /* plugin_managers */
         'recorddriver_tabs' => array(
             'MZKCatalog\RecordDriver\SolrMarc' => array(
@@ -52,6 +69,7 @@ $config = array(
         'factories' => array(
             'MZKCatalog\AlephBrowse\Connector' => 'MZKCatalog\AlephBrowse\Factory::getAlephBrowseConnector',
             // 'VuFind\Translator' => 'MZKCatalog\Service\Factory::getTranslator',
+            'VuFind\ILSHoldLogic' => 'MZKCatalog\ILS\Logic\Factory::getFlatHolds',
         ),
     ),
     'controllers' => array(
@@ -60,13 +78,23 @@ $config = array(
             'alephbrowse' => 'MZKCatalog\Controller\Factory::getAlephBrowseController',
         ),
         'invokables' => array(
+            'search'     => 'MZKCatalog\Controller\SearchController',
+            'ajax'       => 'MZKCatalog\Controller\AjaxController',
             'myresearch' => 'MZKCatalog\Controller\MyResearchController',
+        ),
+    ),
+    'controller_plugins' => array(
+        'factories' => array(
+            'shortLoanRequests'   => 'MZKCatalog\Controller\Plugin\Factory::getShortLoanRequests',
         ),
     ),
 );
 
 $staticRoutes = array(
     'AlephBrowse/Home',
+    'Search/Conspectus', 'Search/MostSearched', 'Search/NewAcquisitions',
+    'MyResearch/CheckedOutHistory', 'MyResearch/ShortLoans',
+    'MyResearch/FavoritesImport', 'MyResearch/ProfileChange',
 );
 
 foreach ($staticRoutes as $route) {
@@ -78,13 +106,13 @@ foreach ($staticRoutes as $route) {
             'route'    => '/' . $route,
             'defaults' => array(
                 'controller' => $controller,
-                'action'     => $action,
+                'action'     => (! empty($action)) ? $action : 'default',
             )
         )
     );
 }
 
-$nonTabRecordActions = array('DigiRequest');
+$nonTabRecordActions = array('DigiRequest','ShortLoan');
 
 foreach ($nonTabRecordActions as $action) {
     $config['router']['routes']['record' . '-' . strtolower($action)] = array(

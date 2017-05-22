@@ -33,13 +33,13 @@ return array(
         'factories' => array(
             'flashmessages' => 'VuFind\View\Helper\Bootstrap3\Factory::getFlashmessages',
             'record' => function ($sm) {
-                return new \MZKCommon\View\Helper\MZKCommon\Record(
+                return new \MZKCatalog\View\Helper\MZKCatalog\Record(
                     $sm->getServiceLocator()->get('VuFind\Config')->get('config')
                 );
             },
-            'layoutclass' => 'MZKCatalog\View\Helper\MzkTheme\Factory::getLayoutClass',
-            'mzkhelper'   => 'MZKCatalog\View\Helper\MzkTheme\Factory::getMzkHelper',
-            'obalkyknih' => 'ObalkyKnihV3\View\Helper\ObalkyKnih\Factory::getObalkyKnih',
+            'layoutclass' => 'MZKCatalog\View\Helper\MZKCatalog\Factory::getLayoutClass',
+            'mzkhelper'   => 'MZKCatalog\View\Helper\MZKCatalog\Factory::getMzkHelper',
+            'obalkyknih' => 'MZKCatalog\View\Helper\MZKCatalog\Factory::getObalkyKnih',
         ),
         'invokables' => array(
             'highlight' => 'VuFind\View\Helper\Bootstrap3\Highlight',

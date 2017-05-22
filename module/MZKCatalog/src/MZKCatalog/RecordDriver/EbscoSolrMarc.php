@@ -1,6 +1,6 @@
 <?php
 namespace MZKCatalog\RecordDriver;
-use MZKCommon\RecordDriver\SolrMarc As ParentSolrDefault;
+use MZKCatalog\RecordDriver\SolrMarc As ParentSolrDefault;
 
 /*
  * Costumized record driver for EBSCO records
