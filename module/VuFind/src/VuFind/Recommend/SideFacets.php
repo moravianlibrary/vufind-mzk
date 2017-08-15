@@ -156,6 +156,18 @@ class SideFacets extends AbstractFacets
         $this->mainFacets = isset($config->$mainSection) ?
             $config->$mainSection->toArray() : [];
 
+        //Language-specific facets
+        $resultsByLanguageSection = 'ResultsByLanguage_cs';
+        $genreByLanguageSection = 'GenreByLanguage_cs';
+        $languageSections = array($resultsByLanguageSection, $genreByLanguageSection);
+        foreach ($languageSections as $languageSection) {
+            if (isset($config->$languageSection)) {
+                foreach ($config->$languageSection->toArray() as $key => $value) {
+                    $this->mainFacets[$key] = $value;
+                }
+            }
+        }
+
         // Load boolean configurations:
         $this->loadBooleanConfigs($config, array_keys($this->mainFacets));
 
