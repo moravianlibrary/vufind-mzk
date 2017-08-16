@@ -114,7 +114,13 @@
         marginwidth="0"
         width="400"
         height="100"
-        src="https://knihovny.cz/embeded-search-cpk-top.php">
+        <?  if (isset($_GET[lng]) && $_GET[lng] == "en") {?>
+                src="https://knihovny.cz/embeded-search-cpk-top-en.php">
+        <?  } else if (isset($_COOKIE[language]) && $_COOKIE[language] == "en" && !isset($_GET[lng])) {?>
+                src="https://knihovny.cz/embeded-search-cpk-top-en.php">
+        <?  } else {?>
+                src="https://knihovny.cz/embeded-search-cpk-top.php">
+        <?}?>
       </iframe>
     </div>
   <? else: ?>
