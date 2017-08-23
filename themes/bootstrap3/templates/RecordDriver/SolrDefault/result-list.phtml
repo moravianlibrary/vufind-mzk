@@ -83,8 +83,8 @@
           <? if (!empty($snippet['caption'])): ?>
             <strong><?=$this->transEsc($snippet['caption']) ?>:</strong> ';
           <? endif; ?>
-          <? if (!empty($snippet['snippet'])): $snippet['snippet'] = preg_replace('/{{{{(.+)(?=\.\.\.”)/', "", $snippet['snippet']);?>
-            <span class="quotestart">&#8220;</span>...<?=$this->highlight(substr($snippet['snippet'], 0, 60)) ?>...<span class="quoteend">&#8221;</span><br/>
+          <? if (!empty($snippet['snippet'])):;?>
+            <span class="quotestart">&#8220;</span>...<?=$this->highlight(substr($snippet['snippet'], 0, 400)) ?>...<span class="quoteend">&#8221;</span><br/>
            <? endif; ?>
          <? endif; ?>
         <br/>
