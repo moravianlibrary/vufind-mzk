@@ -180,6 +180,7 @@ Subject:
   DismaxFields:
     - topic_unstemmed^150
     - topic^100
+    - topic_en_str_mv^100
     - geographic^50
     - genre^50
     - era
