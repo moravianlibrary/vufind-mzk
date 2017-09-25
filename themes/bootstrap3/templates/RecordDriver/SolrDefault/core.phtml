@@ -4,7 +4,7 @@
 ?>
 <? if ($bibinfo = $this->record($this->driver)->getObalkyKnihJSONV3()): ?>
     <script type="text/javascript">
-      obalky.display_cover("#cover", <?=$bibinfo?>, <?=json_encode($this->record($this->driver)->getObalkyKnihAdvert("record"))?>);
+      //obalky.display_cover("#cover", <?=$bibinfo?>, <?=json_encode($this->record($this->driver)->getObalkyKnihAdvert("record"))?>);
     </script>
 <? endif; ?>
 <div class="row">
@@ -245,9 +245,29 @@
   
   <div class="col-md-3 cover">
     <div class="text-center">
+      <? $coverData[] = $this->driver->tryMethod('getCover'); ?>
       <div id="cover">
-        <img src="<?=$this->imageLink('format/' . $formats[0] . '.png')?>" />
+        <div class="cover_thumbnail_nonJS">
+          <a href="<?=$coverData[0]['backlink_url']?>" class="title">
+          <? if ($coverData[0]['cover_medium_url'] != "") { ?>
+            <img align="left" src="<?=$coverData[0]['cover_medium_url']?>" alt="cover" />
+            <? if ($coverData[0]['succ_cover_count'] > 1) { ?>
+                <a href="<?=$coverData[0]['backlink_url']?>"><?=$this->transEsc('cover_previous_issues');?></a>
+            <? } ?>
+          <? } else { ?>
+            <img src="<?=$this->imageLink('format/' . $formats[0] . '.png')?>" />
+          <? } ?>
+          </a>
+        </div>
+        <? if ($coverData[0]['toc_thumbnail_url'] != "") { ?>
+        <div class="toc_thumbnail_nonJS">
+          <a href="<?=$coverData[0]['toc_pdf_url']?>" class="title">
+            <img align="left" src="<?=$coverData[0]['toc_thumbnail_url']?>" alt="table of content" />
+          </a>
+        </div>
+        <? } ?>
       </div>
+
       <?if (!empty($formats)): ?>
         <div class="format">
           <?=$this->record($this->driver)->getFormatList()?>

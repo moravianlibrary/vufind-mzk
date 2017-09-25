@@ -15,8 +15,17 @@ class SolrMarc extends ParentSolrDefault
 
     public function getAllSubjectHeadings()
     {
+        //Language-specific topic
+        if (isset($_GET[lng]) && $_GET[lng] == "en") {
+            $topicBylanguage = "topic_en_str_mv";
+        } else if (isset($_COOKIE[language]) && $_COOKIE[language] == "en" && !isset($_GET[lng])) {
+            $topicBylanguage = "topic_en_str_mv";
+        } else {
+            $topicBylanguage = "topic";
+        }
+
         $result = array();
-        $subjectFields = array('topic', 'geographic', 'genre');
+        $subjectFields = array($topicBylanguage, 'geographic', 'genre');
         foreach ($subjectFields as $field) {
             if (isset($this->fields[$field])) {
                 $result = array_merge($result, $this->fields[$field]);
@@ -277,6 +286,30 @@ class SolrMarc extends ParentSolrDefault
         }
         return $bibinfo;
     }
+
+    public function getCover()
+    {
+        $thisbibinfo = $this->getBibinfoForObalkyKnihV3();
+        if (isset($thisbibinfo['isbn'])) {
+            $thisbibquery = 'isbn=' . $thisbibinfo['isbn'];
+        }
+        elseif (isset($thisbibinfo['ean'])) {
+            $thisbibquery = 'ean=' . $thisbibinfo['ean'];
+        }
+        elseif (isset($thisbibinfo['nbn'])) {
+            $thisbibquery = 'nbn=' . $thisbibinfo['nbn'];
+        }
+
+        if(!isset($thisbibquery)) {
+            return array();
+        } else {
+            $thisbibjson = file_get_contents('http://cache.obalkyknih.cz/api/books?' . $thisbibquery);
+            $thisbibjsonparsed = json_decode($thisbibjson, true);
+            $thisbibjsonparsed = $thisbibjsonparsed[0];
+            return $thisbibjsonparsed;
+        }
+    }
+
 
     public function getBibinfoForObalkyKnihV3()
     {
