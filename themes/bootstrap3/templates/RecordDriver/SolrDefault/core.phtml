@@ -252,7 +252,7 @@
           <? if ($coverData[0]['cover_medium_url'] != "") { ?>
             <img align="left" src="<?=$coverData[0]['cover_medium_url']?>" alt="cover" />
             <? if ($coverData[0]['succ_cover_count'] > 1) { ?>
-                <a href="<?=$coverData[0]['backlink_url']?>"><?=$this->transEsc('cover_previous_issues');?></a>
+                <a href="<?=$coverData[0]['backlink_url']?>" target="_blank"><?=$this->transEsc('cover_previous_issues');?></a>
             <? } ?>
           <? } else { ?>
             <img src="<?=$this->imageLink('format/' . $formats[0] . '.png')?>" />
