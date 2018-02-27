@@ -2442,7 +2442,7 @@ class AlephMZK extends \VuFind\ILS\Driver\AbstractBase implements \Zend\Log\Logg
         $illRootNode = $illDom->appendChild($illRoot);
         foreach ($attrs as $key => $value) {
             $element = $illDom->createElement($key);
-            $element->appendChild($illDom->createTextNode($value));
+            $element->appendChild($illDom->createTextNode($this->escapeTextNode($value)));
             $illRootNode->appendChild($element);
         }
         $xml = $illDom->saveXML();
@@ -2470,7 +2470,7 @@ class AlephMZK extends \VuFind\ILS\Driver\AbstractBase implements \Zend\Log\Logg
             $varfield->addAttribute('id', '700');
             $varfield->addAttribute('i1', '1');
             $varfield->addAttribute('i2', ' ');
-            $subfield = $varfield->addChild('subfield', $additional_authors);
+            $subfield = $varfield->addChild('subfield', htmlspecialchars($additional_authors));
             $subfield->addAttribute('label', 'a');
         }
         if (!empty($source)) {
@@ -2490,6 +2490,11 @@ class AlephMZK extends \VuFind\ILS\Driver\AbstractBase implements \Zend\Log\Logg
             return array('success' => false, 'sysMessage' => $ex->getMessage());
         }
         return array('success' => true, 'id' => $docNum);
+    }
+
+    protected function escapeTextNode($text)
+    {
+        return str_replace('&', ' AND ', $text);
     }
 
     /**
