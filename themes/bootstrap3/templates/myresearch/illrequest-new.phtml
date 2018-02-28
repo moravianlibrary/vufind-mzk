@@ -25,7 +25,11 @@
       <h2><?=$this->transEsc($groupName)?></h2>
       <?foreach($elements as $field => $attributes):?>
         <?if ($attributes['type'] == 'paragraph'):?>
-          <p><?=$this->transEsc($attributes['text'])?></p>
+          <?if (!empty($attributes['text'])):?>
+            <p class="<?=isset($attributes['class']) ? $attributes['class'] : ''?>">
+              <?=$this->transEsc($attributes['text'])?>
+            </p>
+          <?endif;?>
         <?elseif ($attributes['type'] == 'hidden'):?>
           <input type="hidden" name="<?=$this->escapeHtml($field)?>" value="<?=$this->escapeHtml($attributes['value'])?>"/>
         <?elseif ($attributes['type'] == 'checkbox'):?>
