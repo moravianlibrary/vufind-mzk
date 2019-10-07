@@ -2092,9 +2092,6 @@ class AlephMZK extends \VuFind\ILS\Driver\AbstractBase implements \Zend\Log\Logg
             $numOfItems = (int) $slot->{'num-of-items'};
             $numOfOccupied = (int) $slot->{'num-of-occupied'};
             $available = $numOfItems - $numOfOccupied;
-            if ($available <= 0) {
-                continue;
-            }
             $start_date = $slot->{'start'}->{'date'};
             $start_time = $slot->{'start'}->{'hour'};
             $end_date = $slot->{'end'}->{'date'};
@@ -2110,6 +2107,7 @@ class AlephMZK extends \VuFind\ILS\Driver\AbstractBase implements \Zend\Log\Logg
                 'start_time' => (string) $start_time[0],
                 'end_date'   => (string) $end_date[0],
                 'end_time'   => (string) $end_time[0],
+                'available'  => ($available > 0),
             );
         }
         $result = array(

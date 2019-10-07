@@ -172,30 +172,35 @@ class RecordController extends RecordControllerBase
             $start_time = $slot['start_time'];
             $slotsByDate[$start_date][$start_time] = $slot;
             $slotsByDate[$start_date][$start_time]['id'] = $id;
-            $slotsByDate[$start_date][$start_time]['available'] = true;
+            $slotsByDate[$start_date][$start_time]['available'] = $slot['available'];
         }
 
         static $positions = array(
-            '0830' => 0,
-            '0900' => 0,
             '1000' => 1,
-            '1100' => 1,
-            '1200' => 1,
-            '1400' => 2,
-            '1600' => 3,
-            '1700' => 3,
-            '2000' => 4,
+            '1200' => 2,
+            '1400' => 3,
+            '1600' => 4,
+            '1800' => 5,
+            '2000' => 6
         );
 
         $results = array();
         foreach ($slotsByDate as $date => $slotsInDate) {
             $result = array_fill(0, 7, array('available' => false));
+            $firstSlot = key($slotsInDate);
+            $position = 0;
+            foreach ($positions as $start => $index) {
+                if ($firstSlot >= $start) {
+                    $position = $index;
+                }
+            }
             foreach ($slotsInDate as $start_time => $slot) {
                 $start_time = $slot['start_time'];
                 $slot['start_time'] = substr($start_time, 0, 2) . ':' . substr($start_time, 2, 2);
                 $end_time = $slot['end_time'];
                 $slot['end_time'] = substr($end_time, 0, 2) . ':' . substr($end_time, 2, 2);
-                $result[$positions[$start_time]] = $slot;
+                $result[$position] = $slot;
+                $position++;
             }
             $date = date_parse_from_format('Ymd', $date);
             $date =  $date['day'] . '. ' . $date['month'] . '.';
