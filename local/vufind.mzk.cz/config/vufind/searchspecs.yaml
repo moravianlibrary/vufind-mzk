@@ -140,6 +140,8 @@ Author:
     - author_fuller^50
     - author2
     - author_additional
+    - author_viz
+    - corporation_viz
   DismaxParams:
     - [bq, "relevancy_str:default^2"]
   QueryFields:
@@ -159,6 +161,12 @@ Author:
       - [onephrase, 100]
       - [and, 50]
       - [or, ~]
+    author_viz:
+      - [onephrase, 100]
+      - [and, 50]
+    corporation_viz:
+      - [onephrase, 100]
+      - [and, 50]
   FilterQuery: "mzk_visible_str:visible"
 
 ISN:
@@ -184,6 +192,8 @@ Subject:
     - geographic^50
     - genre^50
     - era
+    - subject_viz
+    - genre_viz
   DismaxParams:
     - [bq, "relevancy_str:default^2"]
   QueryFields:
@@ -206,6 +216,12 @@ Subject:
     era:
       - [and, 100]
       - [or, ~]
+    subject_viz:
+      - [onephrase, 200]
+      - [and, 100]
+    genre_viz:
+      - [onephrase, 200]
+      - [and, 100]
   FilterQuery: "mzk_visible_str:visible"
 
 # This field definition is a compromise that supports both journal-level and
@@ -308,11 +324,15 @@ AllFields:
     - series2^30
     - author^300
     - author_fuller^150
+    - author_viz^300
+    - corporation_viz^300
     - contents^10
     - topic_unstemmed^550
     - topic^500
     - geographic^300
     - genre^300
+    - subject_viz^100
+    - genre_viz^100
     - publishDate_txt_mv^50
     - allfields_unstemmed^10
     - fulltext_unstemmed^10
@@ -356,6 +376,12 @@ AllFields:
       - [and, 50]
     author_additional:
       - [and, 50]
+    author_viz:
+      - [onephrase, 200]
+      - [and, 150]
+    corporation_viz:
+      - [onephrase, 100]
+      - [and, 50]
     contents:
       - [and, 10]
     topic_unstemmed:
@@ -367,6 +393,10 @@ AllFields:
       - [onephrase, 300]
     genre:
       - [onephrase, 300]
+    subject_viz:
+      - [onephrase, 200]
+    genre_viz:
+      - [onephrase, 200]
     allfields_unstemmed:
       - [or, 10]
     fulltext_unstemmed:
