@@ -106,7 +106,7 @@
 
       <strong><?=$this->transEsc('Created') ?>:</strong> <?=$this->escapeHtml($ilsDetails['create']) ?> |
       <? if($ilsDetails['on_hold_until']):?>
-        <strong><?=$this->transEsc('On hold until') ?>:</strong> <?=$this->escapeHtml($ilsDetails['on_hold_until']) ?> |
+        <strong><?=$this->transEsc('on_hold_until_note') ?> |
       <? else: ?>
         <strong><?=$this->transEsc('Expires') ?>:</strong> <?=$this->escapeHtml($ilsDetails['expire']) ?> |
       <? endif; ?>
