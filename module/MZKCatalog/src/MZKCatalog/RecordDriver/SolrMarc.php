@@ -303,7 +303,9 @@ class SolrMarc extends ParentSolrDefault
         if(!isset($thisbibquery)) {
             return array();
         } else {
-            $thisbibjson = file_get_contents('http://cache.obalkyknih.cz/api/books?' . $thisbibquery);
+            $context = stream_context_create(array('http' => array('timeout' => 5)));
+            $thisbibjson = file_get_contents('http://cache.obalkyknih.cz/api/books?' . $thisbibquery,
+                false, $context);
             $thisbibjsonparsed = json_decode($thisbibjson, true);
             $thisbibjsonparsed = $thisbibjsonparsed[0];
             return $thisbibjsonparsed;
