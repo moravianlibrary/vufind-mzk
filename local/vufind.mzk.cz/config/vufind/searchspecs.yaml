@@ -173,6 +173,7 @@ ISN:
   DismaxFields:
     - isbn
     - issn
+    - ismn_isn_mv
   DismaxParams:
     - [bq, "relevancy_str:default^2"]
   QueryFields:
@@ -340,6 +341,7 @@ AllFields:
     - fulltext
     - isbn
     - issn
+    - ismn_isn_mv
     - toc_txt_mv
   DismaxParams:
     - [bq, "relevancy_str:default^50000"]
@@ -411,7 +413,7 @@ AllFields:
       - [onephrase, ~]
     issn:
       - [onephrase, ~]
-  FilterQuery: "mzk_visible_str:visible"
+  FilterQuery: "mzk_visible_str:visible AND NOT(id:MZK01-000680703)"
 #  ExactSettings:
 #    DismaxFields:
 #      - title_full_unstemmed^600
