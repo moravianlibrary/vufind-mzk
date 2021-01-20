@@ -1,6 +1,7 @@
 <?php
   $backLink = $this->serverUrl($this->recordLink()->getUrl($this->driver));
   $formats = $this->driver->getFormats();
+  $base = explode('-', $this->driver->getUniqueID())[0];
 ?>
 <? if ($bibinfo = $this->record($this->driver)->getObalkyKnihJSONV3()): ?>
     <script type="text/javascript">
@@ -156,7 +157,11 @@
         <th><?=$this->transEsc('Online Access')?>: </th>
         <td>
           <? foreach ($urls as $current): ?>
-            <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>"><?=$this->escapeHtml($current['desc'])?></a><br/>
+            <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>"
+               data-link-type="Online Access" data-bib-base="<?=$this->escapeHtmlAttr($base)?>">
+              <?=$this->escapeHtml($current['desc'])?>
+            </a>
+            <br/>
           <? endforeach; ?>
           <? if ($openUrlActive): ?>
             <?=$openUrl->renderTemplate()?><br/>
