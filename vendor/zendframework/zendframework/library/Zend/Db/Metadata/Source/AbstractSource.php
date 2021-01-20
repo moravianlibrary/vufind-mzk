@@ -11,7 +11,7 @@ namespace Zend\Db\Metadata\Source;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Metadata\MetadataInterface;
-use Zend\Db\Metadata\Object;
+use Zend\Db\Metadata\Object as ZendObject;
 
 abstract class AbstractSource implements MetadataInterface
 {
@@ -127,10 +127,10 @@ abstract class AbstractSource implements MetadataInterface
         $data = $this->data['table_names'][$schema][$tableName];
         switch ($data['table_type']) {
             case 'BASE TABLE':
-                $table = new Object\TableObject($tableName);
+                $table = new ZendObject\TableObject($tableName);
                 break;
             case 'VIEW':
-                $table = new Object\ViewObject($tableName);
+                $table = new ZendObject\ViewObject($tableName);
                 $table->setViewDefinition($data['view_definition']);
                 $table->setCheckOption($data['check_option']);
                 $table->setIsUpdatable($data['is_updatable']);
@@ -273,7 +273,7 @@ abstract class AbstractSource implements MetadataInterface
 
         $info = $this->data['columns'][$schema][$table][$columnName];
 
-        $column = new Object\ColumnObject($columnName, $table, $schema);
+        $column = new ZendObject\ColumnObject($columnName, $table, $schema);
         $props = array(
             'ordinal_position', 'column_default', 'is_nullable',
             'data_type', 'character_maximum_length', 'character_octet_length',
@@ -344,7 +344,7 @@ abstract class AbstractSource implements MetadataInterface
         }
 
         $info = $this->data['constraints'][$schema][$table][$constraintName];
-        $constraint = new Object\ConstraintObject($constraintName, $table, $schema);
+        $constraint = new ZendObject\ConstraintObject($constraintName, $table, $schema);
 
         foreach (array(
             'constraint_type'         => 'setType',
