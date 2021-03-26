@@ -101,12 +101,7 @@ class SolrMarc extends ParentSolrDefault
 
     public function isAvailableForDigitalization()
     {
-        return $this->getEODLink() == null
-            && substr($this->getUniqueID(), 0, 5) == 'MZK01'
-            && substr($this->marcRecord->getField('008'), 23, 2) == 'xr'
-            && in_array('Book', $this->getFormats())
-            && !$this->isDigitized()
-        ;
+        return false;
     }
 
     public function getRestrictions()
