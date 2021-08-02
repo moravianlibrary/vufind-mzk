@@ -215,6 +215,16 @@
         </tr>
       <? endif; ?>
 
+      <? $languageNote = $this->driver->getLanguageNote(); ?>
+      <? if ($languageNote): ?>
+        <tr valign="top">
+          <th><?=$this->transEsc('Language note')?>: </th>
+            <td>
+              <?=$this->escapeHtml($languageNote)?><br/>
+            </td>
+        </tr>
+      <? endif; ?>
+
     </table>
     
     <? $eodLink = $this->driver->getEODLink();?>

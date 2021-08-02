@@ -405,4 +405,9 @@ class SolrMarc extends ParentSolrDefault
         return $this->getLocalId();
     }
 
+    public function getLanguageNote()
+    {
+        return $this->getFirstFieldValue('546', array('a'));
+    }
+
 }
