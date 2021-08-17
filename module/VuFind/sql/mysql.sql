@@ -70,7 +70,7 @@ CREATE TABLE `oai_resumption` (
 CREATE TABLE `resource` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `record_id` varchar(120) NOT NULL DEFAULT '',
-  `title` varchar(200) NOT NULL DEFAULT '',
+  `title` varchar(400) NOT NULL DEFAULT '',
   `author` varchar(200) DEFAULT NULL,
   `year` mediumint(6) DEFAULT NULL,
   `source` varchar(50) NOT NULL DEFAULT 'Solr',

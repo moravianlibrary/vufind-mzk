@@ -1,5 +1,6 @@
 <?
   $recordId = $this->driver->getUniqueID();
+  $base = explode('-', $recordId)[0];
   $backLink = $this->serverUrl($this->recordLink()->getUrl($this->driver));
   $formats = $this->driver->getFormats();
   $lookfor = $this->results->getUrlQuery()->isQuerySuppressed() ? '' : $this->params->getDisplayQuery();
@@ -83,9 +84,9 @@
           <? if (!empty($snippet['caption'])): ?>
             <strong><?=$this->transEsc($snippet['caption']) ?>:</strong> ';
           <? endif; ?>
-          <? if (!empty($snippet['snippet'])): ?>
-            <span class="quotestart">&#8220;</span>...<?=$this->highlight($snippet['snippet']) ?>...<span class="quoteend">&#8221;</span><br/>
-          <? endif; ?>
+          <? if (!empty($snippet['snippet'])):;?>
+            <span class="quotestart">&#8220;</span>...<?=$this->highlight(substr($snippet['snippet'], 0, 400)) ?>...<span class="quoteend">&#8221;</span><br/>
+           <? endif; ?>
          <? endif; ?>
         <br/>
       <? endif; ?>
@@ -116,7 +117,10 @@
         <? if (!is_array($urls)) $urls = array();
           if(!$this->driver->isCollection()):
             foreach ($urls as $current): ?>
-              <a href="<?=$this->escapeHtml($this->proxyUrl($current['url']))?>" class="fulltext" target="new"><i class="fa fa-x fa-external-link"></i> <?=($current['url'] == $current['desc']) ? $this->transEsc('Get full text') : $this->escapeHtml($current['desc'])?></a><br/>
+              <a href="<?=$this->escapeHtml($this->proxyUrl($current['url']))?>" class="fulltext" target="new" data-link-type="Online Access" data-bib-base="<?=$this->escapeHtmlAttr($base)?>">
+                <i class="fa fa-x fa-external-link"></i> <?=($current['url'] == $current['desc']) ? $this->transEsc('Get full text') : $this->escapeHtml($current['desc'])?>
+              </a>
+              <br/>
           <? endforeach; ?>
         <? endif; ?>
       <? endif; ?>

@@ -294,7 +294,9 @@ class MyResearchController extends MyResearchControllerBase
                     ),
                 ),
                 'confirmation' => array('label' => 'ill_confirmation', 'type' => 'checkbox', 'required' => true),
+                'note' => array('type' => 'paragraph', 'text' => $this->getILLNote(), 'class' => 'ill-note'),
                 'hmac' => array('type' => 'hidden', value => $this->getHMAC()),
+
             ),
         );
     }
@@ -304,9 +306,8 @@ class MyResearchController extends MyResearchControllerBase
         return array(
             'ill_request_for_serial' => array(
                 'title' => array('label' => 'ill_journal_title', 'type' => 'text', 'required' => true),
-                'issn' => array('label' => 'ill_additional_authors', 'type' => 'text', 'required' => false),
+                'issn' => array('label' => 'ill_issn', 'type' => 'text', 'required' => false),
                 'year' => array('label' => 'ill_year', 'type' => 'text', 'required' => true),
-                'volume' => array('label' => 'ill_volume', 'type' => 'text', 'required' => false),
                 'issue' => array('label' => 'ill_issue', 'type' => 'text', 'required' => false),
                 'source' => array('label' => 'ill_source', 'type' => 'text', 'required' => false),
             ),
@@ -336,9 +337,15 @@ class MyResearchController extends MyResearchControllerBase
                     ),
                 ),
                 'confirmation' => array('label' => 'ill_confirmation', 'type' => 'checkbox'),
+                'note' => array('type' => 'paragraph', 'text' => $this->getILLNote(), 'class' => 'ill-note'),
                 'hmac' => array('type' => 'hidden', 'value' => $this->getHMAC()),
             ),
         );
+    }
+
+    protected function getILLNote()
+    {
+        return $this->translate('ill_note', null, '');
     }
 
     public function checkedOutHistoryAction()

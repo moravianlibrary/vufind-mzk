@@ -102,6 +102,26 @@
       <? foreach ($this->results->getRecommendations('noresults') as $current): ?>
         <?=$this->recommend($current)?>
       <? endforeach; ?>
+      <iframe
+        een="true"
+        webkitallowfullscreen="true"
+        mozallowfullscreen="true"
+        allowfullscreen="true"
+        msallowfullscreen="true"
+        frameborder="0"
+        scrolling="no"
+        marginheight="0"
+        marginwidth="0"
+        width="400"
+        height="100"
+        <?  if (isset($_GET[lng]) && $_GET[lng] == "en") {?>
+                src="https://knihovny.cz/embeded-search-cpk-top-en.php">
+        <?  } else if (isset($_COOKIE[language]) && $_COOKIE[language] == "en" && !isset($_GET[lng])) {?>
+                src="https://knihovny.cz/embeded-search-cpk-top-en.php">
+        <?  } else {?>
+                src="https://knihovny.cz/embeded-search-cpk-top.php">
+        <?}?>
+      </iframe>
     </div>
   <? else: ?>
     <form class="form-inline" method="post" name="bulkActionForm" action="<?=$this->url('cart-home')?>">

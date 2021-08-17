@@ -393,7 +393,7 @@ class CartController extends AbstractBase
                 'html' => true,
                 'msg' => $this->translate('bulk_save_success') . '. '
                 . '<a href="' . $listUrl . '" class="gotolist">'
-                . $this->translate('go_to_list') . '</a>.'
+                . $this->translate('go_to_list_of_favorites') . '</a>.'
             ];
             $this->flashMessenger()->addMessage($message, 'success');
             return $this->redirect()->toUrl($listUrl);

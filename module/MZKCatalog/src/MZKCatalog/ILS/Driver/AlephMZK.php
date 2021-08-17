@@ -651,7 +651,7 @@ class AlephWebServices {
         foreach ($path_elements as $path_element) {
             $path .= $path_element . "/";
         }
-        $url = "http://$this->host:$this->dlfport/rest-dlf/" . $path;
+        $url = "https://$this->host:$this->dlfport/rest-dlf/" . $path;
         $headers = ["accept" => "application/xml"];
         if ($this->language) {
             $params['lang'] = $this->language;
@@ -2092,9 +2092,6 @@ class AlephMZK extends \VuFind\ILS\Driver\AbstractBase implements \Zend\Log\Logg
             $numOfItems = (int) $slot->{'num-of-items'};
             $numOfOccupied = (int) $slot->{'num-of-occupied'};
             $available = $numOfItems - $numOfOccupied;
-            if ($available <= 0) {
-                continue;
-            }
             $start_date = $slot->{'start'}->{'date'};
             $start_time = $slot->{'start'}->{'hour'};
             $end_date = $slot->{'end'}->{'date'};
@@ -2110,6 +2107,7 @@ class AlephMZK extends \VuFind\ILS\Driver\AbstractBase implements \Zend\Log\Logg
                 'start_time' => (string) $start_time[0],
                 'end_date'   => (string) $end_date[0],
                 'end_time'   => (string) $end_time[0],
+                'available'  => ($available > 0),
             );
         }
         $result = array(
@@ -2442,7 +2440,7 @@ class AlephMZK extends \VuFind\ILS\Driver\AbstractBase implements \Zend\Log\Logg
         $illRootNode = $illDom->appendChild($illRoot);
         foreach ($attrs as $key => $value) {
             $element = $illDom->createElement($key);
-            $element->appendChild($illDom->createTextNode($value));
+            $element->appendChild($illDom->createTextNode($this->escapeTextNode($value)));
             $illRootNode->appendChild($element);
         }
         $xml = $illDom->saveXML();
@@ -2470,7 +2468,7 @@ class AlephMZK extends \VuFind\ILS\Driver\AbstractBase implements \Zend\Log\Logg
             $varfield->addAttribute('id', '700');
             $varfield->addAttribute('i1', '1');
             $varfield->addAttribute('i2', ' ');
-            $subfield = $varfield->addChild('subfield', $additional_authors);
+            $subfield = $varfield->addChild('subfield', htmlspecialchars($additional_authors));
             $subfield->addAttribute('label', 'a');
         }
         if (!empty($source)) {
@@ -2490,6 +2488,11 @@ class AlephMZK extends \VuFind\ILS\Driver\AbstractBase implements \Zend\Log\Logg
             return array('success' => false, 'sysMessage' => $ex->getMessage());
         }
         return array('success' => true, 'id' => $docNum);
+    }
+
+    protected function escapeTextNode($text)
+    {
+        return str_replace('&', ' AND ', $text);
     }
 
     /**
