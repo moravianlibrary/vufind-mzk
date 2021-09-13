@@ -53,7 +53,7 @@
               <a href="<?=$this->url('myresearch-home')?>" class="myresearch" title="<?=$this->transEsc("MyResearch")?>"><?=$this->transEsc("MyResearch")?></a>
               <a href="<?=$this->url('myresearch-logout')?>" class="logout" title="<?=$this->transEsc("Log Out")?>"><?=$this->transEsc("Log Out")?></a>
             <? else:?>
-              <a href="https://www.mzk.cz/registration_mzk" title="<?=$this->transEsc("Register")?>" class="register"><?=$this->transEsc("Register")?></a>
+              <a href="https://registrace.mzk.cz/" title="<?=$this->transEsc("Register")?>" class="register"><?=$this->transEsc("Register")?></a>
               <? if ($sessionInitiator = $account->getSessionInitiator($this->serverUrl($this->url('myresearch-home')))): ?>
                 <a href="<?=$this->escapeHtml($sessionInitiator)?>" class="login"><?=$this->transEsc("Login")?></a>
               <? else: ?>
