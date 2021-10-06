@@ -229,6 +229,18 @@
     </tr>
   <? endif; ?>
 
+  <? $descriptionMZK03 = $this->driver->getDescriptionMZK03(); if (!empty($descriptionMZK03)): ?>
+    <? $contentDisplayed = true; ?>
+      <tr valign="top">
+        <th><?=$this->transEsc('Description')?>: </th>
+        <td>
+          <? foreach ($descriptionMZK03 as $field): ?>
+            <?=$this->transEsc($field)?>
+          <? endforeach; ?>
+        </td>
+      </tr>
+  <? endif; ?>
+
   <? if (!isset($contentDisplayed) || !$contentDisplayed): // Avoid errors if there were no rows above ?>
     <tr><td><?=$this->transEsc('no_description')?></td></tr>
   <? endif; ?>

@@ -410,4 +410,15 @@ class SolrMarc extends ParentSolrDefault
         return $this->getFirstFieldValue('546', array('a'));
     }
 
+    public function getDescriptionMZK03()
+    {
+        list($base, $sysno) = explode('-', $this->getUniqueID());
+        if ($base != 'MZK03') return null;
+        $result = array();
+        for ($i = 500; $i < 600; $i++){
+            $result = array_merge($result, $this->getFieldArray($i));
+        }
+        return $result;
+    }
+
 }
