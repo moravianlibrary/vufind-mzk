@@ -9,7 +9,7 @@ use MZKCatalog\RecordDriver\SolrMarc As ParentSolrDefault;
 class EbscoSolrMarc extends ParentSolrDefault
 {
 
-    const EZPROXY_URL = 'https://proxy.mzk.cz/login?auth=shibboleth&url=';
+    const EZPROXY_URL = 'sfx.institute=MZK';
 
     public function getTitle()
     {
@@ -72,13 +72,22 @@ class EbscoSolrMarc extends ParentSolrDefault
         return array();
     }
 
+    public function getNativeLinks()
+    {
+        return array();
+    }
+
     public function getURLs()
     {
         $links = parent::getURLs();
         foreach ($links as &$link) {
-            $link['url'] =  self::EZPROXY_URL . $link['url'];
+            $link['url'] =  $link['url'] . self::EZPROXY_URL;
         }
         return $links;
     }
 
+    public function supportsAjaxStatus()
+    {
+        return false;
+    }
 }
