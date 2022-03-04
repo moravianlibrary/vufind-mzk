@@ -44,6 +44,9 @@
   <div class="col-sm-4"><p><strong><?=$this->transEsc('Need Help?')?></strong></p>
     <ul>
       <li><a href="<?=$this->url('help-home')?>?topic=search" class="help-link" title="<?=$this->transEsc('Search Tips')?>"><?=$this->transEsc('Search Tips')?></a></li>
+      <?php if ($this->layout()->userLang == 'cs'): ?>
+        <li><a href="https://www.youtube.com/watch?v=5-zzsQKQ6gU"><?=$this->transEsc('Basic search: video help')?></a></li>
+      <?php endif; ?>
       <li><a href="http://www.ptejteseknihovny.cz/zadani-dotazu?q=BOA001"><?=$this->transEsc('Ask a Librarian')?></a></li>
       <li><a href="http://www.mzk.cz/faq"><?=$this->transEsc('FAQs')?></a></li>
       <li><a href="<?=$feedbackUrl?>" class="lightbox"><?=$this->transEsc('Feedback')?></a></li>
