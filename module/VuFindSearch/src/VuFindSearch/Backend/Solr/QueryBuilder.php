@@ -129,9 +129,9 @@ class QueryBuilder implements QueryBuilderInterface
         if ($query instanceof QueryGroup) {
             $query = $this->reduceQueryGroup($query);
         } else {
-            $query->setString(
-                $this->getLuceneHelper()->normalizeSearchString($query->getString())
-            );
+            // Clone the query to avoid modifying the original user-visible query
+            $query = clone $query;
+            $query->setString($this->getNormalizedQueryString($query));
         }
 
         $string  = $query->getString() ?: '*:*';
@@ -350,6 +350,58 @@ class QueryBuilder implements QueryBuilderInterface
         } else {
             return $string;
         }
+    }
+
+    /**
+     * If the query ends in a non-escaped question mark, the user may not really
+     * intend to use the question mark as a wildcard -- let's account for that
+     * possibility.
+     *
+     * @param string $string Search query to adjust
+     *
+     * @return string
+     */
+    protected function fixTrailingQuestionMarks($string)
+    {
+        // Treat colon and whitespace as word separators -- in either case, we
+        // should add parentheses for accuracy.
+        $multiword = preg_match('/[^\s][\s:]+[^\s]/', $string);
+        $callback = function ($matches) use ($multiword) {
+            // Make sure all question marks are properly escaped (first unescape
+            // any that are already escaped to prevent double-escapes, then escape
+            // all of them):
+            $s = $matches[1];
+            $escaped = str_replace('?', '\?', str_replace('\?', '?', $s));
+            $s = "($s) OR ($escaped)";
+            if ($multiword) {
+                $s = "($s) ";
+            }
+            return $s;
+        };
+        // Use a lookahead to skip matches found within quoted phrases.
+        $lookahead = '(?=(?:[^\"]*+\"[^\"]*+\")*+[^\"]*+$)';
+        $string = preg_replace_callback(
+            '/([^\s:()]+\?)(\s|$)' . $lookahead . '/',
+            $callback,
+            $string
+        );
+        return rtrim($string);
+    }
+
+    /**
+     * Given a Query object, return a fully normalized version of the query string.
+     *
+     * @param Query $query Query object
+     *
+     * @return string
+     */
+    protected function getNormalizedQueryString($query)
+    {
+        return $this->fixTrailingQuestionMarks(
+            $this->getLuceneHelper()->normalizeSearchString(
+                $query->getString()
+            )
+        );
     }
 
     /**
