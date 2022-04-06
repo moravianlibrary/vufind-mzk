@@ -317,8 +317,7 @@ class QueryBuilder implements QueryBuilderInterface
                 '(%s)', implode(" {$component->getOperator()} ", $reduced)
             );
         } else {
-            $searchString  = $this->getLuceneHelper()
-                ->normalizeSearchString($component->getString());
+            $searchString  = $this->getNormalizedQueryString($component);
             $searchHandler = $this->getSearchHandler(
                 $component->getHandler(),
                 $searchString
