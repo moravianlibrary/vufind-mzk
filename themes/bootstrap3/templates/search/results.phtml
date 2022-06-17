@@ -102,6 +102,14 @@
       <? foreach ($this->results->getRecommendations('noresults') as $current): ?>
         <?=$this->recommend($current)?>
       <? endforeach; ?>
+      <?php
+        $iframeSrc = 'https://www.knihovny.cz/Search/embedded?position=top&lookfor=' . $lookfor;
+        if ((isset($_GET[lng]) && $_GET[lng] == "en")
+          || (isset($_COOKIE[language]) && $_COOKIE[language] == "en" && !isset($_GET[lng]))
+        ) {
+          $iframeSrc .= '&lang=en';
+        }
+      ?>
       <iframe
         een="true"
         webkitallowfullscreen="true"
@@ -114,13 +122,7 @@
         marginwidth="0"
         width="400"
         height="100"
-        <?  if (isset($_GET[lng]) && $_GET[lng] == "en") {?>
-                src="https://www.knihovny.cz/Search/embedded?position=top">
-        <?  } else if (isset($_COOKIE[language]) && $_COOKIE[language] == "en" && !isset($_GET[lng])) {?>
-                src="https://www.knihovny.cz/Search/embedded?position=top">
-        <?  } else {?>
-                src="https://www.knihovny.cz/Search/embedded?position=top">
-        <?}?>
+        src="<?=$this->escapeHtmlAttr($iframeSrc)?>">
       </iframe>
     </div>
   <? else: ?>
