@@ -288,9 +288,9 @@ class MyResearchController extends MyResearchControllerBase
             'ill_payment_options' => array(
                 'payment' => array('label' => 'ill_type', 'type' => 'select',  'required' => false,
                     'options' => array(
-                        '50'   => 'ill_request_from_Czech_Republic',
-                        '300'  => 'ill_request_from_Europe',
-                        '600'  => 'ill_request_from_Great_Britain_or_oversea',
+                        'kniha ČR' => 'ill_request_from_Czech_Republic',
+                        '300'      => 'ill_request_from_Europe',
+                        '600'      => 'ill_request_from_Great_Britain_or_oversea',
                     ),
                 ),
                 'confirmation' => array('label' => 'ill_confirmation', 'type' => 'checkbox', 'required' => true),
