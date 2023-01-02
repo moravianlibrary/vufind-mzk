@@ -294,7 +294,6 @@ class MyResearchController extends MyResearchControllerBase
                     ),
                 ),
                 'confirmation' => array('label' => 'ill_confirmation', 'type' => 'checkbox', 'required' => true),
-                'note' => array('type' => 'paragraph', 'text' => $this->getILLNote(), 'class' => 'ill-note'),
                 'hmac' => array('type' => 'hidden', value => $this->getHMAC()),
 
             ),
@@ -337,7 +336,6 @@ class MyResearchController extends MyResearchControllerBase
                     ),
                 ),
                 'confirmation' => array('label' => 'ill_confirmation', 'type' => 'checkbox'),
-                'note' => array('type' => 'paragraph', 'text' => $this->getILLNote(), 'class' => 'ill-note'),
                 'hmac' => array('type' => 'hidden', 'value' => $this->getHMAC()),
             ),
         );
