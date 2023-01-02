@@ -9,7 +9,7 @@
     </script>
 <? endif; ?>
 <div class="row">
-  <? $QRCode = $this->record($this->driver)->getQRCode("core"); 
+  <? $QRCode = $this->record($this->driver)->getQRCode("core");
      $cover = $this->record($this->driver)->getCover('core', 'medium', $this->record($this->driver)->getThumbnail('large'));
      $preview = $this->record($this->driver)->getPreviews(); ?>
 
@@ -182,7 +182,7 @@
           </td>
         </tr>
       <? endif; ?>
-      
+
       <? $physical = $this->driver->getPhysicalDescriptions(); ?>
       <? if (!empty($physical)): ?>
         <tr valign="top">
@@ -194,7 +194,7 @@
             </td>
         </tr>
       <? endif; ?>
-      
+
       <? $subscribedYears = $this->driver->getSubscribedYears(); ?>
       <? if ($subscribedYears): ?>
         <tr valign="top">
@@ -226,7 +226,7 @@
       <? endif; ?>
 
     </table>
-    
+
     <? $eodLink = $this->driver->getEODLink();?>
     <? if ($eodLink != null): ?>
       <table class="eod_link">
@@ -240,23 +240,24 @@
         </tr>
       </table>
     <? endif; ?>
-    
+
     <? $digRequest = $this->driver->isAvailableForDigitalization(); ?>
     <? if ($digRequest): ?>
       <table class="digi_req_link">
         <tr>
           <td>
+            <a href="<?=$backLink?>/DigiRequest">
               <img src="<?=$this->imageLink('digitalization_request_button_cz.png')?>"
-                alt="<?=$this->transEsc('request_for_digitalization_button_text');?>" />
+                 alt="<?=$this->transEsc('request_for_digitalization_button_text');?>" />
+            </a>
           </td>
         </tr>
       </table>
-      <p><?=$this->transEsc('Request for digitalization not available')?></p>
     <? endif; ?>
-    
+
     <?/* End Main Details */?>
   </div>
-  
+
   <div class="col-md-3 cover">
     <div class="text-center">
       <? $coverData[] = $this->driver->tryMethod('getCover'); ?>
@@ -287,7 +288,7 @@
           <?=$this->record($this->driver)->getFormatList()?>
         </div>
       <? endif; ?>
-    
+
       <? /* Display qrcode if appropriate: */ ?>
       <? if($QRCode): ?>
         <img alt="<?=$this->transEsc('QR Code')?>" class="qrcode" src="<?=$this->escapeHtml($QRCode);?>"/>
@@ -301,5 +302,5 @@
 
     <? if ($preview): ?><?=$preview?><? endif; ?>
   </div>
-  
+
 </div>

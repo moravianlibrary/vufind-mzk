@@ -13,18 +13,17 @@
   <p>Vážený pane, vážená paní,</p>
   <p>děkujeme za Váš návrh na digitalizaci dokumentu.</p>
   <p>
-    V případě, že to fyzický stav dokumentu dovolí a pokud již nebylo dílo digitalizováno jinou knihovnou, budeme ho v nejbližší době digitalizovat a zveřejníme v digitální knihovně MZK.
-    <b>Vzhledem k zákonným omezením v ní budou volně (s možností prohlížení mimo budovu MZK) zpřístupněna jen díla, na která se nevztahují autorská ani nakladatelská práva.</b>
+    V případě, že to fyzický stav dokumentu a další okolnosti dovolí, budeme ho v nejbližší době digitalizovat a zveřejníme v digitální knihovně MZK.
+    <b>Vzhledem k zákonným omezením v ní budou volně (s možností prohlížení mimo budovu MZK) zpřístupněna jen díla, na která se nevztahují autorská ani nakladatelská práva, případně díla umístitelná na Seznam děl nedostupných na trhu</b>
     Autorská práva se vztahují na dokumenty, u kterých osoby s podílem na jejich vzniku (autoři, překladatelé, ilustrátoři apod.) zemřely před méně než <b>70 lety</b>.
     Nakladatelská práva umožňují zveřejnění díla nejdříve <b>50 let</b> po jejich vydání. Chráněná díla mohou být podle zákonné úpravy zveřejněna pouze v
     budově knihovny na počítačích, které neumožňují stažení digitální kopie.
   </p>
+
   <p>
     Pokud máte zájem získat informaci o výsledku digitalizace, vyplňte prosím svou e-mailovou adresu.
   </p>
-  <p>
-    Za MZK Michal Indrák, Odbor digitalizace
-  </p>
+
   <form id="edit-save-form" class="form-horizontal" method="post" action="<?=$this->recordLink()->getActionUrl($this->driver, 'DigiRequest')?>" name="saveRecord">
     <input type="hidden" name="submit" value="1" />
     <input type="hidden" name="id" value="<?=$this->escapeHtml($this->driver->getUniqueId()) ?>" />
