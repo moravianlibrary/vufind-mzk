@@ -84,4 +84,26 @@ class Factory
         return $driver;
     }
 
+    /**
+     * Factory for BookportSolrMarc record driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return BookportSolrMarc
+     */
+    public function getBookportSolrMarc(ServiceManager $sm)
+    {
+        $driver = new \MZKCatalog\RecordDriver\BookportSolrMarc(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            null,
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
+        );
+        $driver->attachILS(
+            $sm->getServiceLocator()->get('VuFind\ILSConnection'),
+            $sm->getServiceLocator()->get('VuFind\ILSHoldLogic'),
+            $sm->getServiceLocator()->get('VuFind\ILSTitleHoldLogic')
+        );
+        return $driver;
+    }
+
 }

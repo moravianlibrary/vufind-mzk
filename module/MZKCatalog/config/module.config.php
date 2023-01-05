@@ -19,6 +19,7 @@ $config = array(
                     'solrmzk'   => 'MZKCatalog\RecordDriver\Factory::getSolrMarc',
                     'solrmzk04' => 'MZKCatalog\RecordDriver\Factory::getSolrMarc',
                     'solrebsco' => 'MZKCatalog\RecordDriver\Factory::getEbscoSolrMarc',
+                    'solrbookport' => 'MZKCatalog\RecordDriver\Factory::getBookportSolrMarc',
                     'solrdefault' => 'MZKCatalog\RecordDriver\Factory::getSolrMarc',
                 ) /* factories */
             ), /* recorddriver */
@@ -53,6 +54,17 @@ $config = array(
                 'defaultTab' => null,
             ),
             'MZKCatalog\RecordDriver\EbscoSolrMarc' => array(
+                'tabs' => array(
+                    'Description' => 'Description',
+                    'TOC' => 'TOC',
+                    'UserComments' => 'UserComments',
+                    'Reviews' => 'Reviews',
+                    'Excerpt' => 'Excerpt',
+                    'Details' => 'StaffViewMARC',
+                ),
+                'defaultTab' => null,
+            ),
+            'MZKCatalog\RecordDriver\BookportSolrMarc' => array(
                 'tabs' => array(
                     'Description' => 'Description',
                     'TOC' => 'TOC',
