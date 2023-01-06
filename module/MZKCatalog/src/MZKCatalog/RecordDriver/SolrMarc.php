@@ -106,6 +106,7 @@ class SolrMarc extends ParentSolrDefault
             && substr($this->marcRecord->getField('008'), 23, 2) == 'xr'
             && in_array('Book', $this->getFormats())
             && !$this->isDigitized()
+            && min(array_map('intval', $this->fields['publishDate'] ?? [ PHP_INT_MIN ])) <= 2002
         ;
     }
 
