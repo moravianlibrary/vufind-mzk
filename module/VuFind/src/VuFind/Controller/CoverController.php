@@ -136,22 +136,7 @@ class CoverController extends AbstractBase
     public function showAction()
     {
         $this->writeSession();  // avoid session write timing bug
-
-        // Special case: proxy a full URL:
-        $proxy = $this->params()->fromQuery('proxy');
-        if (!empty($proxy)) {
-            try {
-                $image = $this->getProxy()->fetch($proxy);
-                return $this->displayImage(
-                    $image->getHeaders()->get('contenttype')->getFieldValue(),
-                    $image->getContent()
-                );
-            } catch (\Exception $e) {
-                // If an exception occurs, drop through to the standard case
-                // to display an image unavailable graphic.
-            }
-        }
-
+        
         // Default case -- use image loader:
         $this->getLoader()->loadImage($this->getImageParams());
         return $this->displayImage();
